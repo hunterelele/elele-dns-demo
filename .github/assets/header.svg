@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="240" viewBox="0 0 880 240" fill="none" role="img" aria-label="elele. DNS — a dashboard for the DNS your house actually uses">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#141414"/>
+      <stop offset="100%" stop-color="#0b0b0b"/>
+    </linearGradient>
+
+    <linearGradient id="arc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5bc8ff" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#5bc8ff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#5bc8ff" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="arcAmber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffa337" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#ffa337" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffa337" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- The hairline that separates the mark from the strapline, drawn rather
+         than bordered so it can fade at both ends the way the product's do. -->
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2e2e2e" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#2e2e2e"/>
+      <stop offset="80%" stop-color="#2e2e2e"/>
+      <stop offset="100%" stop-color="#2e2e2e" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="880" height="240" rx="10" fill="url(#face)"/>
+  <rect x="0.5" y="0.5" width="879" height="239" rx="9.5" stroke="#1f1f1f"/>
+
+  <!-- The wordmark.
+
+       "DNS" is a tspan in the same <text> rather than a second <text> at a
+       measured x. It used to be positioned at x="252", which was a guess at
+       where 46px Georgia would leave off; the actual advance is nearer 162, so
+       the mono set adrift about ninety pixels to the right of the mark it
+       belongs to. Flowing it costs the ability to nudge it and removes the
+       ability to be wrong: `dx` is the gap, whatever the font does.
+
+       They share one baseline, which is the same call the product's topbar
+       makes for the same pair — 15px mono beside a 46px display face centres
+       to nothing sensible, so they sit on the line instead. -->
+  <text x="56" y="76" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-weight="600" fill="#f0efe9" letter-spacing="-1.2">elele<tspan fill="#5bc8ff">.</tspan><tspan dx="14" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="15" font-weight="400" fill="#86857f" letter-spacing="2.5">DNS</tspan></text>
+
+  <rect x="56" y="96" width="768" height="1" fill="url(#rule)"/>
+
+  <text x="56" y="122" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" fill="#b4b4ae">A dashboard for the DNS your house actually uses.</text>
+  <text x="56" y="144" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="11.5" fill="#86857f">90 days of history · per-device identity · traffic destinations · what the blocking cost</text>
+
+  <!-- The map gets a band of its own, below the text rather than behind it.
+
+       Every element below used to sit forty pixels higher, which put the home
+       marker's pulse — a ring expanding to r=15 around (120,150) — sweeping
+       through the metrics line on every cycle, and ran both amber arcs along
+       it. Text painting over a moving ring reads as a rendering fault, not as
+       a layer. Forty more pixels of canvas separates them for good. -->
+
+  <!-- Traffic. Each arc is a query leaving the house: they draw, hold, and fade,
+       staggered so the header is never still and never busy. -->
+  <g fill="none" stroke-width="1.6" stroke-linecap="round">
+    <path d="M120 200 C 250 150, 420 150, 545 172" stroke="url(#arc)" stroke-dasharray="520" stroke-dashoffset="520">
+      <animate attributeName="stroke-dashoffset" values="520;0;0;-520" dur="6s" begin="0s" repeatCount="indefinite" keyTimes="0;0.45;0.7;1"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="6s" begin="0s" repeatCount="indefinite" keyTimes="0;0.2;0.7;1"/>
+    </path>
+
+    <path d="M120 200 C 280 176, 480 146, 690 164" stroke="url(#arc)" stroke-dasharray="620" stroke-dashoffset="620">
+      <animate attributeName="stroke-dashoffset" values="620;0;0;-620" dur="6s" begin="1.4s" repeatCount="indefinite" keyTimes="0;0.45;0.7;1"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="6s" begin="1.4s" repeatCount="indefinite" keyTimes="0;0.2;0.7;1"/>
+    </path>
+
+    <!-- Amber is a query that never left: refused at the resolver, so it hooks
+         off the marker and stops. The product draws blocked traffic the same way. -->
+    <path d="M120 200 C 168 182, 196 188, 208 206" stroke="url(#arcAmber)" stroke-dasharray="110" stroke-dashoffset="110">
+      <animate attributeName="stroke-dashoffset" values="110;0;0;-110" dur="4s" begin="0.6s" repeatCount="indefinite" keyTimes="0;0.35;0.65;1"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="4s" begin="0.6s" repeatCount="indefinite" keyTimes="0;0.2;0.65;1"/>
+    </path>
+
+    <path d="M120 200 C 176 178, 214 180, 232 200" stroke="url(#arcAmber)" stroke-dasharray="130" stroke-dashoffset="130">
+      <animate attributeName="stroke-dashoffset" values="130;0;0;-130" dur="4s" begin="2.5s" repeatCount="indefinite" keyTimes="0;0.35;0.65;1"/>
+      <animate attributeName="opacity" values="0;1;1;0" dur="4s" begin="2.5s" repeatCount="indefinite" keyTimes="0;0.2;0.65;1"/>
+    </path>
+  </g>
+
+  <!-- Destinations. Small, still, and lit when an arc reaches them. -->
+  <g>
+    <circle cx="545" cy="172" r="2.5" fill="#5bc8ff" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;1;0.35" dur="6s" begin="0s" repeatCount="indefinite" keyTimes="0;0.47;1"/>
+      <animate attributeName="r" values="2.5;4;2.5" dur="6s" begin="0s" repeatCount="indefinite" keyTimes="0;0.47;1"/>
+    </circle>
+    <circle cx="690" cy="164" r="2.5" fill="#5bc8ff" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;1;0.35" dur="6s" begin="1.4s" repeatCount="indefinite" keyTimes="0;0.47;1"/>
+      <animate attributeName="r" values="2.5;4;2.5" dur="6s" begin="1.4s" repeatCount="indefinite" keyTimes="0;0.47;1"/>
+    </circle>
+  </g>
+
+  <!-- Home. The one thing on the map that does not move. -->
+  <circle cx="120" cy="200" r="14" fill="#5bc8ff" opacity="0.08"/>
+  <circle cx="120" cy="200" r="4" fill="#5bc8ff"/>
+  <circle cx="120" cy="200" r="4" fill="none" stroke="#5bc8ff" stroke-width="1">
+    <animate attributeName="r" values="4;15" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0" dur="3s" repeatCount="indefinite"/>
+  </circle>
+</svg>

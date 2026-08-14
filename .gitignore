@@ -1,0 +1,4 @@
+# This repository holds documentation and the installer. Nothing is built here.
+.DS_Store
+Thumbs.db
+*.log

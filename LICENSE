@@ -1,0 +1,114 @@
+elele. DNS: Proprietary Software License
+Copyright (c) 2026 Elele Group. All rights reserved.
+
+===============================================================================
+NOTICE
+===============================================================================
+
+This software is proprietary and is NOT open source. It is made available in
+compiled, distributable form for the sole purpose of allowing you to run it on
+hardware you control. No license is granted to the source code.
+
+===============================================================================
+1. GRANT
+===============================================================================
+
+Subject to your compliance with this License, the copyright holder grants you a
+personal, non-exclusive, non-transferable, revocable license to:
+
+  (a) install and run one or more instances of this software on computing
+      hardware that you own or otherwise control; and
+
+  (b) use it for personal or internal business purposes.
+
+===============================================================================
+2. RESTRICTIONS
+===============================================================================
+
+You may NOT:
+
+  (a) copy, publish, distribute, sublicense, sell, rent, lease or otherwise
+      make this software available to any third party;
+
+  (b) offer this software, or any service substantially derived from it, to
+      third parties, whether or not for a fee, including as a hosted or
+      managed service;
+
+  (c) modify, adapt, translate or create derivative works of this software;
+
+  (d) reverse engineer, decompile or disassemble any part of this software,
+      except to the extent this restriction is expressly prohibited by
+      applicable law;
+
+  (e) remove, obscure or alter any copyright, trademark or attribution notice
+      contained in this software or its documentation.
+
+===============================================================================
+3. THIRD-PARTY COMPONENTS
+===============================================================================
+
+This software incorporates third-party software and data that are licensed
+separately and are NOT covered by this License. Those components remain subject
+to their own terms, which in some cases grant you rights this License does not,
+and in other cases impose obligations this License does not.
+
+See NOTICE.md for the full list, and read it before redistributing anything.
+Of particular note:
+
+  - The AdGuard companiesdb dataset is licensed CC BY-SA 4.0, which is a
+    share-alike license carrying attribution obligations on the data itself.
+
+  - The optional MaxMind GeoLite2 city databases are governed by MaxMind's
+    GeoLite2 End User License Agreement, which requires attribution and
+    restricts redistribution. They are not distributed with this software.
+
+===============================================================================
+4. NO AFFILIATION
+===============================================================================
+
+This software is an independent work. It is not affiliated with, endorsed by,
+sponsored by, or in any way officially connected with AdGuard Software Limited
+or with Pi-hole LLC, or with any of their subsidiaries or affiliates.
+
+"AdGuard" and "AdGuard Home" are trademarks of AdGuard Software Limited.
+"Pi-hole" is a registered trademark of Pi-hole LLC. Both are used here solely
+to identify the software with which this product interoperates, as permitted by
+nominative fair use. Neither company provides support for this product.
+
+===============================================================================
+5. DISCLAIMER OF WARRANTY
+===============================================================================
+
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NONINFRINGEMENT.
+
+THIS SOFTWARE CONTAINS NO AUTHENTICATION AND IS INTENDED SOLELY FOR USE ON A
+TRUSTED PRIVATE NETWORK. IT CAN READ AND MODIFY THE CONFIGURATION OF THE DNS
+RESOLVER IT IS CONNECTED TO, WHICH MAY AFFECT NETWORK CONNECTIVITY FOR EVERY
+DEVICE THAT RESOLVER SERVES. YOU ARE SOLELY RESPONSIBLE FOR HOW AND WHERE YOU
+DEPLOY IT. SEE THE SECURITY SECTION OF README.md.
+
+===============================================================================
+6. LIMITATION OF LIABILITY
+===============================================================================
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THIS SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THIS SOFTWARE. THIS INCLUDES, WITHOUT LIMITATION, LOSS OF DATA, NETWORK
+OUTAGE, OR UNAUTHORISED DISCLOSURE OF NETWORK ACTIVITY RECORDS.
+
+===============================================================================
+7. TERMINATION
+===============================================================================
+
+This License terminates automatically if you breach any of its terms. On
+termination you must cease all use and destroy all copies in your possession.
+
+===============================================================================
+8. GOVERNING LAW
+===============================================================================
+
+This License is governed by the laws of the jurisdiction in which the copyright
+holder resides, without regard to its conflict-of-law provisions.
