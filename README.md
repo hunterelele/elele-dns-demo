@@ -117,6 +117,53 @@ sudo ./install.sh --uninstall
 
 </details>
 
+<details>
+<summary><b>Or just a compose file</b></summary>
+
+<br>
+
+The installer writes this and starts it for you. If you would rather do it
+yourself, this is the whole thing. The image is on
+[Docker Hub](https://hub.docker.com/r/hunterelele/elele-dns); there is nothing
+to build.
+
+```yaml
+services:
+  elele-dns:
+    image: hunterelele/elele-dns:latest
+    container_name: elele-dns
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      # The image listens on 3001. The left-hand side is the port you visit.
+      - "3000:3001"
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+```
+
+```bash
+# .env, chmod 600 it: it holds your resolver password
+DNS_PROVIDER=adguard
+ADGUARD_URL=http://192.168.1.10:3000
+ADGUARD_USERNAME=admin
+ADGUARD_PASSWORD=your-adguard-password
+DATABASE_PATH=/data/queries.db
+RETENTION_DAYS=90
+PUBLIC_URL=http://192.168.1.10:3000
+```
+
+Then `sudo docker compose up -d`. The full walkthrough, including Pi-hole and
+every environment variable, is in the demo's
+[wiki](https://dns.elele.dev/wiki/manual-install/).
+
+</details>
+
 <br>
 
 > [!WARNING]

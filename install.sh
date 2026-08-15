@@ -30,7 +30,7 @@ AGH_UI_PORT="${AGH_PORT:-3001}"
 AGH_HOST=""
 AGH_USER=""
 AGH_PASS=""
-IMAGE="${ELELE_IMAGE:-ghcr.io/hunterelele/eleledns:latest}"
+IMAGE="${ELELE_IMAGE:-hunterelele/elele-dns:latest}"
 
 WITH_ADGUARD="ask"     # ask | yes | no
 ASSUME_YES=0
@@ -513,13 +513,15 @@ services:
     restart: unless-stopped
     env_file: .env
     ports:
-      - "${DASH_PORT}:3000"
+      # The image listens on 3001. Only the left-hand side is yours to choose.
+      - "${DASH_PORT}:3001"
     volumes:
       # Bind-mounted rather than a named volume so the history is somewhere you
       # can find, copy and back up without knowing Docker's storage layout.
       - ./data:/data
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      # Runs inside the container, so it uses the container's port, not yours.
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
