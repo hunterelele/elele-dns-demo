@@ -124,13 +124,13 @@ sudo ./install.sh --uninstall
 
 The installer writes this and starts it for you. If you would rather do it
 yourself, this is the whole thing. The image is on
-[Docker Hub](https://hub.docker.com/r/hunterelele/elele-dns); there is nothing
+[Docker Hub](https://hub.docker.com/r/elele-dns/elele-dns); there is nothing
 to build.
 
 ```yaml
 services:
   elele-dns:
-    image: hunterelele/elele-dns:latest
+    image: elele-dns/elele-dns:latest
     container_name: elele-dns
     restart: unless-stopped
     env_file: .env

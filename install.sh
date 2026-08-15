@@ -11,7 +11,7 @@
 #   somebody reads a wiki page on a phone that also cannot load anything.
 #
 #   Usage:
-#     curl -fsSL https://raw.githubusercontent.com/hunterelele/eleleDns/main/install.sh | bash
+#     curl -fsSL https://dns.elele.dev/install.sh | sudo bash
 #     ./install.sh --help
 #
 #   It is safe to run twice. Every step checks for what it is about to create.
@@ -30,7 +30,7 @@ AGH_UI_PORT="${AGH_PORT:-3001}"
 AGH_HOST=""
 AGH_USER=""
 AGH_PASS=""
-IMAGE="${ELELE_IMAGE:-hunterelele/elele-dns:latest}"
+IMAGE="${ELELE_IMAGE:-elele-dns/elele-dns:latest}"
 
 WITH_ADGUARD="ask"     # ask | yes | no
 ASSUME_YES=0
