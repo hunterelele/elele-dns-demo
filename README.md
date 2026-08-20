@@ -124,13 +124,13 @@ sudo ./install.sh --uninstall
 
 The installer writes this and starts it for you. If you would rather do it
 yourself, this is the whole thing. The image is on
-[Docker Hub](https://hub.docker.com/r/elele-dns/elele-dns); there is nothing
+[Docker Hub](https://hub.docker.com/r/hunterelele/elele-dns); there is nothing
 to build.
 
 ```yaml
 services:
   elele-dns:
-    image: elele-dns/elele-dns:latest
+    image: hunterelele/elele-dns:latest
     container_name: elele-dns
     restart: unless-stopped
     env_file: .env
@@ -139,12 +139,10 @@ services:
       - "3000:3001"
     volumes:
       - ./data:/data
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/api/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 40s
+    # No healthcheck here on purpose. The image already declares one against
+    # /api/health using node's own fetch. Overriding it with a shell tool is how
+    # you end up permanently unhealthy: this is a slim image and it ships
+    # neither wget nor curl.
 ```
 
 ```bash
@@ -156,6 +154,15 @@ ADGUARD_PASSWORD=your-adguard-password
 DATABASE_PATH=/data/queries.db
 RETENTION_DAYS=90
 PUBLIC_URL=http://192.168.1.10:3000
+```
+
+The container runs as uid 1001, not root. The image gives `/data` to that user
+when it is built, but a bind mount covers that with a root-owned directory from
+the host, and SQLite cannot create a database somewhere it cannot write. The
+installer does this for you; doing it by hand, do it once up front:
+
+```bash
+mkdir -p data && sudo chown -R 1001:1001 data
 ```
 
 Then `sudo docker compose up -d`. The full walkthrough, including Pi-hole and
