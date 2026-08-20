@@ -244,9 +244,35 @@ lan_address() {
   printf '%s' "${ip:-127.0.0.1}"
 }
 
-compose() {
-  if docker compose version >/dev/null 2>&1; then docker compose "$@"
-  else docker-compose "$@"
+# Resolved once into a real command, deliberately not a shell function.
+#
+# This used to be `compose() { docker compose "$@"; }`, called as
+# `as_root "${COMPOSE[@]}" pull`. For anyone not already root that expands to
+# `sudo compose pull`, and sudo does not know about shell functions: it searches
+# PATH and, on Debian and Ubuntu, finds /usr/bin/compose from the `mailcap`
+# package. The install then failed with
+#
+#   Warning: unknown mime-type for "pull" -- using "application/octet-stream"
+#   Error: no "compose" mailcap rules found for type "application/octet-stream"
+#
+# which names neither Docker nor this script, and sends the reader looking for a
+# problem with their MIME configuration.
+#
+# An array holds a real binary and its subcommand, so it survives sudo intact.
+COMPOSE=()
+
+resolve_compose() {
+  # Written as an if rather than `(( ... )) && return 0`. Under `set -e` an
+  # arithmetic expression evaluating to zero is a failing command, and relying on
+  # where it sits in a && list to stay non-fatal is the kind of subtlety that
+  # breaks the moment somebody edits the line.
+  if (( ${#COMPOSE[@]} )); then return 0; fi
+  if as_root docker compose version >/dev/null 2>&1; then
+    COMPOSE=(docker compose)
+  elif as_root docker-compose version >/dev/null 2>&1; then
+    COMPOSE=(docker-compose)
+  else
+    die "no Docker Compose found (tried 'docker compose' and 'docker-compose')"
   fi
 }
 
@@ -271,18 +297,24 @@ if (( DO_UPDATE )); then
   [[ -f "$INSTALL_DIR/docker-compose.yml" ]] \
     || die "nothing installed at $INSTALL_DIR (use --dir if it lives elsewhere)"
 
+  have docker || die "docker is not installed"
+
   # The tag is a moving target, so identity comes from the image ID. Comparing
   # the tag against itself would report success without proving anything moved.
   before="$(as_root docker image inspect --format '{{.Id}}' "$IMAGE" 2>/dev/null || echo none)"
   info "currently running ${before#sha256:}"
 
+  # After the dry-run exit, because resolving it shells out to Docker and a
+  # dry run is supposed to be inspectable on a box where that might not answer.
   if (( DRY_RUN )); then
-    printf '  %s· would run:%s compose pull && compose up -d in %s\n' "$DIM" "$RESET" "$INSTALL_DIR"
+    printf '  %s· would run:%s docker compose pull && docker compose up -d in %s\n' "$DIM" "$RESET" "$INSTALL_DIR"
     say ""
     exit 0
   fi
 
-  (cd "$INSTALL_DIR" && as_root compose pull >>"$LOG_FILE" 2>&1) &
+  resolve_compose
+
+  (cd "$INSTALL_DIR" && as_root "${COMPOSE[@]}" pull >>"$LOG_FILE" 2>&1) &
   spin $! "pulling ${IMAGE}"
   ok "pulled"
 
@@ -298,7 +330,7 @@ if (( DO_UPDATE )); then
     exit 0
   fi
 
-  (cd "$INSTALL_DIR" && as_root compose up -d >>"$LOG_FILE" 2>&1) &
+  (cd "$INSTALL_DIR" && as_root "${COMPOSE[@]}" up -d >>"$LOG_FILE" 2>&1) &
   spin $! "restarting"
   ok "restarted"
 
@@ -340,7 +372,8 @@ if (( DO_UNINSTALL )); then
   rule
   if [[ -f "$INSTALL_DIR/docker-compose.yml" ]]; then
     info "stopping containers"
-    (cd "$INSTALL_DIR" && as_root compose down) >>"$LOG_FILE" 2>&1 || true
+    resolve_compose
+    (cd "$INSTALL_DIR" && as_root "${COMPOSE[@]}" down) >>"$LOG_FILE" 2>&1 || true
     ok "stopped"
   else
     warn "nothing installed at $INSTALL_DIR"
@@ -648,9 +681,10 @@ step "Starting the dashboard"
 if (( DRY_RUN )); then
   info "would run: docker compose up -d"
 else
-  (cd "$INSTALL_DIR" && as_root compose pull >>"$LOG_FILE" 2>&1) &
+  resolve_compose
+  (cd "$INSTALL_DIR" && as_root "${COMPOSE[@]}" pull >>"$LOG_FILE" 2>&1) &
   spin $! "pulling ${IMAGE}"
-  (cd "$INSTALL_DIR" && as_root compose up -d >>"$LOG_FILE" 2>&1) &
+  (cd "$INSTALL_DIR" && as_root "${COMPOSE[@]}" up -d >>"$LOG_FILE" 2>&1) &
   spin $! "starting"
   ok "container is up"
 fi
