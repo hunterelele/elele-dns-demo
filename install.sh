@@ -30,7 +30,7 @@ AGH_UI_PORT="${AGH_PORT:-3001}"
 AGH_HOST=""
 AGH_USER=""
 AGH_PASS=""
-IMAGE="${ELELE_IMAGE:-elele-dns/elele-dns:latest}"
+IMAGE="${ELELE_IMAGE:-hunterelele/elele-dns:latest}"
 
 WITH_ADGUARD="ask"     # ask | yes | no
 ASSUME_YES=0
@@ -469,6 +469,11 @@ step "Writing the configuration"
 
 run as_root mkdir -p "$INSTALL_DIR/data"
 
+# The container runs as uid 1001, not as root. The image chowns /data when it is
+# built, but a bind mount covers that over with a directory root has just made,
+# and SQLite cannot create a database in a directory it cannot write to.
+run as_root chown -R 1001:1001 "$INSTALL_DIR/data"
+
 ENV_FILE="$INSTALL_DIR/.env"
 COMPOSE_FILE="$INSTALL_DIR/docker-compose.yml"
 
@@ -483,6 +488,7 @@ else
 #
 # The dashboard reads AdGuard Home's query log through its admin API, so it
 # needs the same credentials you use to log in. They never leave this machine.
+DNS_PROVIDER=adguard
 ADGUARD_URL=${AGH_HOST}
 ADGUARD_USERNAME=${AGH_USER}
 ADGUARD_PASSWORD=${AGH_PASS}
@@ -519,13 +525,10 @@ services:
       # Bind-mounted rather than a named volume so the history is somewhere you
       # can find, copy and back up without knowing Docker's storage layout.
       - ./data:/data
-    healthcheck:
-      # Runs inside the container, so it uses the container's port, not yours.
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/api/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 40s
+    # No healthcheck here on purpose: the image declares its own, against
+    # /api/health with node's own fetch. Overriding it with a shell tool is how
+    # you end up permanently unhealthy, since the image ships neither wget nor
+    # curl.
 EOF
   ok "wrote docker-compose.yml"
 fi
