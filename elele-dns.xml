@@ -7,8 +7,8 @@
   <MyIP/>
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/Elele-Group/elele-dns-demo/issues</Support>
-  <Project>https://github.com/Elele-Group/elele-dns-demo</Project>
+  <Support>https://github.com/Elele-Group/eleleDNS/issues</Support>
+  <Project>https://github.com/Elele-Group/eleleDNS</Project>
   <Overview>
     Analytics for AdGuard Home or Pi-hole v6+.
 
@@ -40,8 +40,8 @@
   </Overview>
   <Category>Network:DNS Network:Management Tools:Utilities Status:Stable</Category>
   <WebUI>http://[IP]:[PORT:3001]/</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/Elele-Group/elele-dns-demo/master/elele-dns.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/Elele-Group/elele-dns-demo/master/.github/assets/icon.png</Icon>
+  <TemplateURL>https://raw.githubusercontent.com/Elele-Group/eleleDNS/master/elele-dns.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/Elele-Group/eleleDNS/master/.github/assets/icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
@@ -84,7 +84,7 @@
     Target="ADGUARD_URL"
     Default=""
     Mode=""
-    Description="Base URL of your AdGuard Home instance, e.g. http://192.168.1.10:3000 — its address on the LAN, not localhost. Required when Resolver is adguard."
+    Description="Base URL of your AdGuard Home instance, e.g. http://192.168.1.10:3000 (its address on the LAN, not localhost). Required when Resolver is adguard."
     Type="Variable"
     Display="always"
     Required="false"
@@ -114,7 +114,7 @@
     Target="PIHOLE_URL"
     Default=""
     Mode=""
-    Description="Base URL of your Pi-hole v6+ instance, e.g. http://192.168.1.10 — its address on the LAN, not localhost. Required when Resolver is pihole."
+    Description="Base URL of your Pi-hole v6+ instance, e.g. http://192.168.1.10 (its address on the LAN, not localhost). Required when Resolver is pihole."
     Type="Variable"
     Display="advanced"
     Required="false"
@@ -154,7 +154,7 @@
     Target="PUBLIC_URL"
     Default=""
     Mode=""
-    Description="The address this dashboard is reachable at, e.g. http://192.168.1.20:3001 — used for the links inside notifications. Without it the app only knows its own paths, so links are omitted rather than sent broken."
+    Description="The address this dashboard is reachable at, e.g. http://192.168.1.20:3001. Used for the links inside notifications. Without it the app only knows its own paths, so links are omitted rather than sent broken."
     Type="Variable"
     Display="advanced"
     Required="false"
