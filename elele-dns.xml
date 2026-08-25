@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>elele-dns</Name>
+  <Repository>hunterelele/elele-dns:latest</Repository>
+  <Registry>https://hub.docker.com/r/hunterelele/elele-dns</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/Elele-Group/elele-dns-demo/issues</Support>
+  <Project>https://github.com/Elele-Group/elele-dns-demo</Project>
+  <Overview>
+    Analytics for AdGuard Home or Pi-hole v6+.
+
+    Your resolver already blocks the ads. It just cannot tell you much about what it did: its query log is a circular buffer that overwrites itself within the day, and its dashboard counts things rather than explaining them. elele. DNS reads that log continuously into a SQLite store of its own, keeps ninety days of it, and turns the result into the thing the log was always describing.
+
+    - A live destinations map, built from the IP addresses in each DNS reply.
+    - The organisations and categories behind every domain.
+    - A query explorer with resolution time, upstream, cache status and the matched rule.
+    - Named devices, hardware vendor from the MAC, and a rhythm chart per hour of the week.
+    - Refusals grouped into episodes, so one refusal is not four hundred retries.
+    - Upstream latency distribution: p50, p95 and the spread.
+    - Alerting across eight transports, with quiet hours, throttling and digests.
+
+    Enrichment is entirely offline. The datasets ship inside the image, so there are no API keys and nothing about your DNS activity leaves the box in order to be labelled.
+
+    Live demo, running on invented data: https://dns.elele.dev
+
+    SECURITY, READ THIS FIRST. This dashboard has no authentication. No login, no session, no access control on any route. Anyone who can reach its address can read every DNS query your network has made and can change what the resolver does. That is deliberate for a tool that runs on a trusted LAN beside the resolver it reads. It is not safe on a public address: do not port-forward it and do not put it behind a tunnel or an internet-facing reverse proxy without real authentication in front of it first.
+
+    FIRST RUN. Two things, both of which will otherwise look like a broken install:
+
+    1. The container runs as uid 1001, not root, and Unraid creates the appdata directory owned by nobody:users. SQLite cannot create a database somewhere it cannot write. Before starting it, from a terminal: mkdir -p /mnt/user/appdata/elele-dns &amp;&amp; chown -R 1001:1001 /mnt/user/appdata/elele-dns
+
+    2. Point the resolver URL at your AdGuard Home or Pi-hole address on the LAN, not at localhost. From inside this container, localhost is this container.
+
+    Do not add a healthcheck to this container. The image already declares one against /api/health using node's own fetch. This is a slim image and it ships neither wget nor curl, so overriding the healthcheck with a shell tool leaves it permanently unhealthy.
+
+    Not affiliated with AdGuard Software Limited or with Pi-hole. The dashboard is closed source; the documentation and installer are public and the image is free to pull and run. Third-party data attributions travel with the image in NOTICE.md and are shown inside the app at /about.
+  </Overview>
+  <Category>Network:DNS Network:Management Tools:Utilities Status:Stable</Category>
+  <WebUI>http://[IP]:[PORT:3001]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/Elele-Group/elele-dns-demo/master/elele-dns.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/Elele-Group/elele-dns-demo/master/.github/assets/icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>An AdGuard Home or Pi-hole v6+ instance reachable on your network, and its admin credentials.</Requires>
+  <Config
+    Name="WebUI Port"
+    Target="3001"
+    Default="3001"
+    Mode="tcp"
+    Description="The port you visit this dashboard on. The container listens on 3001. Left at 3001 here because AdGuard Home's admin UI commonly occupies 3000 on the same box."
+    Type="Port"
+    Display="always"
+    Required="true"
+    Mask="false">3001</Config>
+  <Config
+    Name="Data"
+    Target="/data"
+    Default="/mnt/user/appdata/elele-dns"
+    Mode="rw"
+    Description="Ninety days of query history lives here. Back it up. This directory must be writable by uid 1001: chown -R 1001:1001 /mnt/user/appdata/elele-dns before first start."
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false">/mnt/user/appdata/elele-dns</Config>
+  <Config
+    Name="Resolver"
+    Target="DNS_PROVIDER"
+    Default="adguard"
+    Mode=""
+    Description="Which resolver to read: adguard or pihole. Fill in the matching block below and leave the other empty. Pi-hole must be v6 or newer."
+    Type="Variable"
+    Display="always"
+    Required="true"
+    Mask="false">adguard</Config>
+  <Config
+    Name="AdGuard Home URL"
+    Target="ADGUARD_URL"
+    Default=""
+    Mode=""
+    Description="Base URL of your AdGuard Home instance, e.g. http://192.168.1.10:3000 — its address on the LAN, not localhost. Required when Resolver is adguard."
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="false"/>
+  <Config
+    Name="AdGuard Home username"
+    Target="ADGUARD_USERNAME"
+    Default=""
+    Mode=""
+    Description="AdGuard Home admin username."
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="false"/>
+  <Config
+    Name="AdGuard Home password"
+    Target="ADGUARD_PASSWORD"
+    Default=""
+    Mode=""
+    Description="AdGuard Home admin password."
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="true"/>
+  <Config
+    Name="Pi-hole URL"
+    Target="PIHOLE_URL"
+    Default=""
+    Mode=""
+    Description="Base URL of your Pi-hole v6+ instance, e.g. http://192.168.1.10 — its address on the LAN, not localhost. Required when Resolver is pihole."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+  <Config
+    Name="Pi-hole password"
+    Target="PIHOLE_PASSWORD"
+    Default=""
+    Mode=""
+    Description="Prefer an application password, generated under Settings -&gt; Web interface / API, over your web password: it can be revoked on its own and works when 2FA is enabled. Leave empty if your Pi-hole has no password set."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="true"/>
+  <Config
+    Name="Database path"
+    Target="DATABASE_PATH"
+    Default="/data/queries.db"
+    Mode=""
+    Description="Where the SQLite store lives. Must sit inside the Data volume above, or the history is lost when the container is recreated."
+    Type="Variable"
+    Display="advanced"
+    Required="true"
+    Mask="false">/data/queries.db</Config>
+  <Config
+    Name="Retention (days)"
+    Target="RETENTION_DAYS"
+    Default="90"
+    Mode=""
+    Description="Days of full per-query detail to keep before compaction. Hourly rollups are kept forever; only the per-query detail is dropped, and only for hours already rolled up."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">90</Config>
+  <Config
+    Name="Public URL"
+    Target="PUBLIC_URL"
+    Default=""
+    Mode=""
+    Description="The address this dashboard is reachable at, e.g. http://192.168.1.20:3001 — used for the links inside notifications. Without it the app only knows its own paths, so links are omitted rather than sent broken."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+  <Config
+    Name="Ingest enabled"
+    Target="INGEST_ENABLED"
+    Default="true"
+    Mode=""
+    Description="Set false to run the dashboard without ingesting from the resolver. Leave true unless you are debugging."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">true</Config>
+  <Config
+    Name="Poll interval (ms)"
+    Target="INGEST_POLL_INTERVAL_MS"
+    Default="5000"
+    Mode=""
+    Description="How often the query log is polled. The metric that matters is lag: the gap between the resolver's newest query and this one, reported at /api/ingest/status. It should sit near this interval."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">5000</Config>
+  <Config
+    Name="Alerts enabled"
+    Target="NOTIFY_ENABLED"
+    Default="true"
+    Mode=""
+    Description="Set false to stop the rule engine evaluating or sending. Channels and rules are configured inside the app at /alerts."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">true</Config>
+</Container>
