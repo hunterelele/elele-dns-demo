@@ -17,6 +17,7 @@
 <img alt="Tailwind v4" src="https://img.shields.io/badge/Tailwind-v4-111111?style=flat-square&logo=tailwindcss&logoColor=5bc8ff">
 <img alt="Static export" src="https://img.shields.io/badge/build-static_export-111111?style=flat-square">
 <img alt="Runs on a Pi" src="https://img.shields.io/badge/runs_on-Raspberry_Pi_5-111111?style=flat-square&logo=raspberrypi&logoColor=ff8fd0">
+<img alt="Images for arm64 and amd64" src="https://img.shields.io/badge/images-arm64_%2B_amd64-111111?style=flat-square&logo=docker&logoColor=5bc8ff">
 
 </div>
 
@@ -168,6 +169,39 @@ mkdir -p data && sudo chown -R 1001:1001 data
 Then `sudo docker compose up -d`. The full walkthrough, including Pi-hole and
 every environment variable, is in the demo's
 [wiki](https://dns.elele.dev/wiki/manual-install/).
+
+</details>
+
+<details>
+<summary><b>On Unraid, a NAS, or any x86 box</b></summary>
+
+<br>
+
+The Pi 5 is what this was designed against and tuned for. It is not what it
+requires: images are published for **`linux/arm64` and `linux/amd64`**, so an
+Unraid server, a Synology, an old NUC or anything else that can reach your
+resolver over the LAN pulls a native image and runs it the same way.
+
+Unraid has a Community Applications template in this repository,
+[`elele-dns.xml`](elele-dns.xml). Two things before you start it, both of which
+otherwise look like a broken install:
+
+```bash
+# 1. The container runs as uid 1001, and Unraid creates appdata as nobody:users.
+#    SQLite cannot create a database somewhere it cannot write.
+mkdir -p /mnt/user/appdata/elele-dns
+chown -R 1001:1001 /mnt/user/appdata/elele-dns
+```
+
+2. Point the resolver URL at its address on the LAN, not at `localhost`. From
+   inside the container, `localhost` is the container.
+
+The template defaults the web port to `3001` on both sides rather than `3000`,
+because AdGuard Home's admin UI usually already holds `3000` on the same box.
+
+Do not add your own healthcheck. The image declares one against `/api/health`
+using node's own fetch, and it ships neither `wget` nor `curl`, so a
+shell-based healthcheck leaves the container permanently unhealthy.
 
 </details>
 
